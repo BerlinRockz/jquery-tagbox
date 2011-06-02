@@ -26,10 +26,14 @@
       completeOnSeparator: true,
       completeOnBlur: false,
       readonly: false,
-      enable_dropdown: false,
-      dropdown_source: function(){},
-      options_attribute: "title",
-      remove_tag_text: "X"
+      enableDropdown: false,
+      dropdownSource: function() {},
+      dropdownOptionsAttribute: "title",
+      removeTagText: "X",
+      maxTags: -1,
+      maxTagsErr: function(max_tags) { alert("A maximum of "+max_tags+" tags can be added!"); },
+      beforeTagAdd: function(tag_to_add) {},
+      afterTagAdd: function(added_tag) {}
     }
     
     if (options) {
@@ -50,7 +54,7 @@
       
       $element.hide();
       try {
-        var options_from_attribute = jQuery.parseJSON($element.attr(options.options_attribute));
+        var options_from_attribute = jQuery.parseJSON($element.attr(options.dropdownOptionsAttribute));
         options = jQuery.extend(options_from_attribute, options);
       } catch(e) {
         console.log(e);
@@ -61,13 +65,13 @@
         options.readonly = true
       
   //  Create DOM Elements
-      if( (options.enable_dropdown) && options.dropdown_source() != null ) {
-        if(options.dropdown_source().jquery) {
-          var $tag_input_elem = (options.readonly) ? '' : options.dropdown_source();
+      if( (options.enableDropdown) && options.dropdownSource() != null ) {
+        if(options.dropdownSource().jquery) {
+          var $tag_input_elem = (options.readonly) ? '' : options.dropdownSource();
           $tag_input_elem.attr("id", options.className+'-input-'+uuid);
           $tag_input_elem.addClass(options.className+'-input');
         } else {
-          var tag_dropdown_items_obj = jQuery.parseJSON(options.dropdown_source());
+          var tag_dropdown_items_obj = jQuery.parseJSON(options.dropdownSource());
           var tag_dropdown_options = new Array('<option value=""></option>');
           jQuery.each(tag_dropdown_items_obj, function(i, v){
             if((jQuery.isArray(v)) && v.length == 2 ) {
@@ -101,11 +105,13 @@
       if(!options.readonly) {
         $tag_add_elem.click(function() {
           var selected_tag = $tag_input_elem.val();
+          options.beforeTagAdd(selected_tag);
           add_tag(selected_tag);
           if($tag_input_elem.is("select")) {
             $tag_input_elem.find('option[value="'+selected_tag+'"]').attr("disabled", "disabled");
           }
           $tag_input_elem.val('');
+          options.afterTagAdd(selected_tag);
         });
         $tag_input_elem.keypress(function(e) {
           var code = (e.keyCode ? e.keyCode : e.which);
@@ -150,8 +156,8 @@
         $tag_list_elem.html('');
         jQuery.each(tags_list, function(key, val) {
           if(val != "") {
-            var remove_tag_link = (options.readonly) ? '' : '<a href="javascript:void(0)" class="'+options.className+'-remove '+options.className+'-remove-'+uuid+'" title="Remove Tag" rel="'+val+'">'+options.remove_tag_text+'</a>';
-            if((options.enable_dropdown) && jQuery('#'+options.className+'-input-'+uuid).find("option").length > 0) {
+            var remove_tag_link = (options.readonly) ? '' : '<a href="javascript:void(0)" class="'+options.className+'-remove '+options.className+'-remove-'+uuid+'" title="Remove Tag" rel="'+val+'">'+options.removeTagText+'</a>';
+            if((options.enableDropdown) && jQuery('#'+options.className+'-input-'+uuid).find("option").length > 0) {
               var display_val = jQuery('#'+options.className+'-input-'+uuid).find("option[value='"+val+"']").text();
             } else {
               var display_val = val;
@@ -167,6 +173,11 @@
         new_tag_items = new_tag_items.split(options.separator);
         new_tag_items = jQuery.map(new_tag_items, function (item) { return jQuery.trim(item); });
         tags_list = tags_list.concat(new_tag_items);
+        tags_list = jQuery.map( tags_list, function(item) { if(item != "") return item } );
+        if( tags_list.length > options.maxTags && options.maxTags != -1 ) {
+          options.maxTagsErr(options.maxTags);
+          return;
+        }
         generate_tags_list(tags_list);
       }
       

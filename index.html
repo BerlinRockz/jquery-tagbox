@@ -8,10 +8,10 @@
   <script type="text/javascript" src="js/jquery.tagbox.js"></script>
   <script type="text/javascript">
     jQuery(function() {
-      jQuery("#jquery-tagbox-text").tagBox();
+      jQuery("#jquery-tagbox-text").tagBox({ maxTags: 3 });
       jQuery("#jquery-tagbox-select").tagBox({ 
-        enable_dropdown: true, 
-        dropdown_source: function() {
+        enableDropdown: true, 
+        dropdownSource: function() {
           return jQuery("#jquery-tagbox-select-options");
         }
       });
