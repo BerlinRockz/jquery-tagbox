@@ -6,8 +6,8 @@
  *
  * Copyright (c) 2011 GeekTantra
  *
- * Version: 1.0.0 (31/05/2011)
- * Requires: jQuery v1.3+
+ * Version: 1.0.1 (02/06/2011)
+ * Requires: jQuery v1.4+
  *
  * Dual licensed under the MIT and GPL licenses:
  *   http://www.opensource.org/licenses/mit-license.php
