@@ -1,0 +1,1 @@
+This is a simple jQuery plugin which can be used to input tags or comma separated values.
