@@ -127,7 +127,7 @@
               $tag_add_elem.trigger("click");
           });
         }
-        jQuery('.'+options.className+'-remove-'+uuid).live( "click", function () {
+        jQuery(document).on( "click","."+options.className+"-remove-"+uuid, function () {
           if(options.confirmRemoval) {
             var c = confirm(options.confirmRemovalText);
             if(!c) return false;
