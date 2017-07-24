@@ -53,11 +53,14 @@
       var $element = jQuery(this);
       
       $element.hide();
-      try {
-        var options_from_attribute = jQuery.parseJSON($element.attr(options.dropdownOptionsAttribute));
-        options = jQuery.extend(options_from_attribute, options);
-      } catch(e) {
-        console.log(e);
+      if($element.attr(options.dropdownOptionsAttribute) != undefined)
+	    {
+        try {
+          var options_from_attribute = jQuery.parseJSON($element.attr(options.dropdownOptionsAttribute));
+          options = jQuery.extend(options_from_attribute, options);
+        } catch(e) {
+          console.log(e);
+        }
       }
       if($element.is(":disabled")) 
         options.readonly = true;
